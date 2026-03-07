@@ -36,9 +36,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             position: relative;
             letter-spacing: -0.01em;
+            padding: 4rem 1rem;
         }
 
         /* Grainy Overlay */
@@ -57,7 +59,7 @@
 
         /* Dynamic Background Orbs */
         .orb {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
             filter: blur(100px);
             opacity: 0.25;
@@ -157,7 +159,7 @@
         /* Grid Layout */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2.5rem;
             width: 100%;
             perspective: 2000px;
@@ -355,26 +357,58 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 4rem 1rem;
+                align-items: flex-start;
+            }
+
             .container {
-                padding: 1.5rem;
+                padding: 1rem;
             }
 
             h1 {
-                font-size: 3.5rem;
+                font-size: clamp(2.5rem, 15vw, 4rem);
+                margin-bottom: 0.5rem;
             }
 
             header {
-                margin-bottom: 3.5rem;
+                margin-bottom: 3rem;
             }
 
             .grid {
                 grid-template-columns: 1fr;
-                max-width: 450px;
-                gap: 1.5rem;
+                max-width: 100%;
+                gap: 1.25rem;
             }
 
             .card {
-                padding: 3rem 2rem;
+                padding: 3rem 1.5rem;
+                border-radius: 32px;
+            }
+
+            .card::after {
+                border-radius: 32px;
+            }
+
+            .icon-wrapper {
+                width: 70px;
+                height: 70px;
+                border-radius: 20px;
+                margin-bottom: 1.5rem;
+            }
+
+            .icon-wrapper svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .card h2 {
+                font-size: 1.5rem;
+            }
+
+            .card p {
+                font-size: 0.95rem;
+                padding: 0 0.5rem;
             }
         }
     </style>
@@ -434,34 +468,50 @@
         const cardsContainer = document.getElementById('cards');
         const cards = document.querySelectorAll('.card');
 
-        cardsContainer.addEventListener('mousemove', (e) => {
+        // Detect if touch device
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        const handleMove = (e) => {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
             cards.forEach(card => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
 
                 card.style.setProperty('--mouse-x', `${x}px`);
                 card.style.setProperty('--mouse-y', `${y}px`);
 
-                // Magnetic effect
-                if (card === e.target.closest('.card')) {
+                // Magnetic & Tilt effect (desktop only)
+                if (!isTouchDevice && card === e.target.closest('.card')) {
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
                     const rotateX = (y - centerY) / 15;
                     const rotateY = (centerX - x) / 15;
 
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
-                } else {
+                } else if (!isTouchDevice) {
                     card.style.transform = '';
                 }
             });
-        });
+        };
 
-        cardsContainer.addEventListener('mouseleave', () => {
+        const handleLeave = () => {
             cards.forEach(card => {
                 card.style.transform = '';
             });
-        });
+        };
+
+        if (isTouchDevice) {
+            // On mobile, show glow on tap/touch
+            cardsContainer.addEventListener('touchstart', handleMove, { passive: true });
+            cardsContainer.addEventListener('touchmove', handleMove, { passive: true });
+            cardsContainer.addEventListener('touchend', handleLeave);
+        } else {
+            cardsContainer.addEventListener('mousemove', handleMove);
+            cardsContainer.addEventListener('mouseleave', handleLeave);
+        }
 
         // Particle System
         const particlesContainer = document.getElementById('particles-container');
