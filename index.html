@@ -4,20 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Hub</title>
+    <title>Buleegasy Hub</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
         :root {
-            --bg-color: #030305;
+            --bg-color: #030303;
             --text-primary: #ffffff;
-            --text-secondary: #8b8b9d;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(255, 255, 255, 0.08);
+            --text-secondary: #86868b;
+            /* Apple-style muted text */
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --card-hover: rgba(255, 255, 255, 0.06);
             --primary-glow: #6366f1;
             --secondary-glow: #ec4899;
-            --tertiary-glow: #10b981;
+            --tertiary-glow: #06b6d4;
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -36,53 +38,80 @@
             justify-content: center;
             overflow: hidden;
             position: relative;
+            letter-spacing: -0.01em;
+        }
+
+        /* Grainy Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.035;
         }
 
         /* Dynamic Background Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            animation: float 20s infinite ease-in-out alternate;
+            filter: blur(100px);
+            opacity: 0.25;
+            animation: float 30s infinite ease-in-out alternate;
             z-index: 0;
+            pointer-events: none;
+            mix-blend-mode: screen;
         }
 
         .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: var(--primary-glow);
-            top: -100px;
-            left: -100px;
-            animation-delay: 0s;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--primary-glow), transparent 70%);
+            top: -300px;
+            left: -200px;
+            animation-duration: 35s;
         }
 
         .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: var(--secondary-glow);
-            bottom: -150px;
-            right: -100px;
+            width: 900px;
+            height: 900px;
+            background: radial-gradient(circle, var(--secondary-glow), transparent 70%);
+            bottom: -400px;
+            right: -200px;
+            animation-duration: 40s;
             animation-delay: -5s;
         }
 
         .orb-3 {
-            width: 300px;
-            height: 300px;
-            background: var(--tertiary-glow);
-            top: 50%;
-            left: 50%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--tertiary-glow), transparent 70%);
+            top: 60%;
+            left: 55%;
             transform: translate(-50%, -50%);
+            animation-duration: 25s;
             animation-delay: -10s;
         }
 
         @keyframes float {
             0% {
-                transform: translate(0, 0) scale(1);
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(100px, 150px) scale(1.1) rotate(60deg);
+            }
+
+            66% {
+                transform: translate(-50px, 80px) scale(0.9) rotate(120deg);
             }
 
             100% {
-                transform: translate(100px, 50px) scale(1.2);
+                transform: translate(0, 0) scale(1) rotate(180deg);
             }
         }
 
@@ -100,53 +129,63 @@
 
         header {
             text-align: center;
-            margin-bottom: 4rem;
-            animation: fadeInDown 1s ease-out forwards;
+            margin-bottom: 5rem;
+            animation: fadeInDown 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
         h1 {
-            font-size: 3.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff, #a5a5b4);
+            font-size: clamp(3rem, 12vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
             -webkit-background-clip: text;
+            background-clip: text;
+            /* Fixed compatibility */
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
         }
 
         p.subtitle {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.25rem);
             color: var(--text-secondary);
             font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         /* Grid Layout */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
             width: 100%;
-            perspective: 1000px;
+            perspective: 2000px;
         }
 
         /* Cards */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 3rem 2rem;
+            border-radius: 40px;
+            padding: 4.5rem 3rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             text-decoration: none;
             color: white;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: fadeInUp 1s ease-out backwards;
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            transition:
+                transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+                background 0.4s ease,
+                border-color 0.4s ease,
+                box-shadow 0.4s ease;
+            animation: fadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
             position: relative;
             overflow: hidden;
+            transform-style: preserve-3d;
         }
 
         .card:nth-child(1) {
@@ -154,101 +193,150 @@
         }
 
         .card:nth-child(2) {
-            animation-delay: 0.2s;
+            animation-delay: 0.25s;
         }
 
         .card:nth-child(3) {
-            animation-delay: 0.3s;
+            animation-delay: 0.4s;
         }
 
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg,
+            inset: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
                     rgba(255, 255, 255, 0.1) 0%,
-                    rgba(255, 255, 255, 0) 100%);
+                    transparent 60%);
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Border Glow */
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            padding: 1px;
+            border-radius: 40px;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(255, 255, 255, 0.3) 0%,
+                    transparent 40%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 2;
         }
 
         .card:hover {
-            transform: translateY(-10px) scale(1.02);
             background: var(--card-hover);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
-        .card:hover::before {
+        .card:hover::before,
+        .card:hover::after {
             opacity: 1;
         }
 
         .icon-wrapper {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.4s ease;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
         }
 
         .card:hover .icon-wrapper {
-            transform: scale(1.1) rotate(5deg);
+            transform: scale(1.15) rotate(8deg);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .card:nth-child(1) .icon-wrapper {
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
             color: var(--primary-glow);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
         }
 
         .card:nth-child(2) .icon-wrapper {
-            box-shadow: 0 0 30px rgba(236, 72, 153, 0.2);
             color: var(--secondary-glow);
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.2);
         }
 
         .card:nth-child(3) .icon-wrapper {
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
             color: var(--tertiary-glow);
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.2);
         }
 
         .icon-wrapper svg {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             stroke-width: 1.5;
         }
 
         .card h2 {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
-            z-index: 1;
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.02em;
+            transform: translateZ(20px);
         }
 
         .card p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            z-index: 1;
+            font-size: 1.05rem;
+            line-height: 1.6;
             font-weight: 300;
+            padding: 0 1rem;
+            transform: translateZ(10px);
         }
 
-        /* Animations */
+        .icon-wrapper {
+            transform: translateZ(30px);
+        }
+
+        /* Particles */
+        #particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.15;
+            filter: blur(1px);
+        }
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
                 transform: translateY(-30px);
+                filter: blur(10px);
             }
 
             to {
                 opacity: 1;
                 transform: translateY(0);
+                filter: blur(0);
             }
         }
 
@@ -256,44 +344,37 @@
             from {
                 opacity: 0;
                 transform: translateY(40px);
+                filter: blur(10px);
             }
 
             to {
                 opacity: 1;
                 transform: translateY(0);
+                filter: blur(0);
             }
         }
 
-        /* Mouse light effect using pseudo-element and JS */
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            padding: 0;
-            z-index: -1;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                    rgba(255, 255, 255, 0.06),
-                    transparent 40%);
-            border-radius: inherit;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
         @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
             h1 {
-                font-size: 2.5rem;
+                font-size: 3.5rem;
+            }
+
+            header {
+                margin-bottom: 3.5rem;
             }
 
             .grid {
                 grid-template-columns: 1fr;
-                max-width: 400px;
+                max-width: 450px;
+                gap: 1.5rem;
+            }
+
+            .card {
+                padding: 3rem 2rem;
             }
         }
     </style>
@@ -303,11 +384,12 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
+    <div id="particles-container"></div>
 
     <main class="container">
         <header>
-            <h1>Buleegasy</h1>
-            <p class="subtitle">Select a destination to continue</p>
+            <h1>Buleegasy Hub</h1>
+            <p class="subtitle">Buleecloud Design System</p>
         </header>
 
         <div class="grid" id="cards">
@@ -319,7 +401,7 @@
                     </svg>
                 </div>
                 <h2>FH</h2>
-                <p>Private secure application gateway</p>
+                <p>Private secure application gateway for high-throughput connections</p>
             </a>
 
             <a href="https://cpt.buleegasy.space" class="card">
@@ -332,7 +414,7 @@
                     </svg>
                 </div>
                 <h2>Periodic Table</h2>
-                <p>Interactive element visualization</p>
+                <p>Deep dive into atomic structures with interactive liquid glass visualization</p>
             </a>
 
             <a href="https://cloud.buleegasy.space" class="card">
@@ -342,24 +424,74 @@
                         <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
                     </svg>
                 </div>
-                <h2>云盘</h2>
-                <p>Personal cloud storage system</p>
+                <h2>BuleeCloud</h2>
+                <p>Next-gen storage powered by Cloudflare R2 and ultimate aesthetics</p>
             </a>
         </div>
     </main>
 
     <script>
-        // Track mouse movement to create a light follow effect on cards
-        document.getElementById('cards').onmousemove = e => {
-            for (const card of document.getElementsByClassName('card')) {
-                const rect = card.getBoundingClientRect(),
-                    x = e.clientX - rect.left,
-                    y = e.clientY - rect.top;
+        const cardsContainer = document.getElementById('cards');
+        const cards = document.querySelectorAll('.card');
+
+        cardsContainer.addEventListener('mousemove', (e) => {
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
 
                 card.style.setProperty('--mouse-x', `${x}px`);
                 card.style.setProperty('--mouse-y', `${y}px`);
-            }
-        };
+
+                // Magnetic effect
+                if (card === e.target.closest('.card')) {
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 15;
+                    const rotateY = (centerX - x) / 15;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
+                } else {
+                    card.style.transform = '';
+                }
+            });
+        });
+
+        cardsContainer.addEventListener('mouseleave', () => {
+            cards.forEach(card => {
+                card.style.transform = '';
+            });
+        });
+
+        // Particle System
+        const particlesContainer = document.getElementById('particles-container');
+        const count = 30;
+
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 3 + 1;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}%`;
+            p.style.top = `${Math.random() * 100}%`;
+
+            const duration = Math.random() * 20 + 20;
+            const delay = Math.random() * -40;
+
+            p.animate([
+                { transform: 'translate(0, 0)', opacity: 0.1 },
+                { transform: `translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 200}px)`, opacity: 0.3 },
+                { transform: 'translate(0, 0)', opacity: 0.1 }
+            ], {
+                duration: duration * 1000,
+                iterations: Infinity,
+                delay: delay * 1000,
+                easing: 'ease-in-out'
+            });
+
+            particlesContainer.appendChild(p);
+        }
     </script>
 </body>
 
